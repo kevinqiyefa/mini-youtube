@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import { fade, makeStyles } from '@material-ui/core/styles';
 
 import { IconButton, InputBase, Paper } from '@material-ui/core';
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -53,8 +53,24 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 'auto',
   },
 }));
-const SearchBar = (props) => {
+
+const SearchBar = ({ onSubmit }) => {
+  const [searchTerm, setSearchTerm] = useState('');
   const classes = useStyles();
+
+  const handleChange = (event) => setSearchTerm(event.target.value);
+
+  const onKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!!searchTerm.trim()) {
+      onSubmit(searchTerm);
+    }
+  };
 
   return (
     <div className={classes.searchContainer}>
@@ -66,9 +82,11 @@ const SearchBar = (props) => {
             input: classes.inputInput,
           }}
           inputProps={{ 'aria-label': 'search' }}
+          onChange={handleChange}
+          onKeyPress={onKeyPress}
         />
         <div className={classes.searchIcon}>
-          <IconButton>
+          <IconButton onClick={handleSubmit}>
             <SearchIcon />
           </IconButton>
         </div>
@@ -77,8 +95,8 @@ const SearchBar = (props) => {
   );
 };
 
-// SearchBar.propTypes = {
-
-// }
+SearchBar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
 
 export default SearchBar;

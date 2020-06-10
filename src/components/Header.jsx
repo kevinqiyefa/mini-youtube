@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 import SearchBar from './SearchBar';
 
 const useStyles = makeStyles((theme) => ({
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Header = () => {
+const Header = ({ onSubmit }) => {
   const classes = useStyles();
   return (
     <AppBar position="static" color="secondary">
@@ -31,11 +32,15 @@ const Header = () => {
           <Typography variant="h6" className={classes.logo}>
             Mini YouTube
           </Typography>
-          <SearchBar />
+          <SearchBar onSubmit={onSubmit} />
         </Toolbar>
       </Container>
     </AppBar>
   );
+};
+
+Header.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
 };
 
 export default Header;

@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { VideoDetail, VideoList, Header } from './components';
 import youtube from './services/api/youtube';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: 'lightgray',
-    height: '100vh',
+  contentContainer: {
+    margin: theme.spacing(4, 0, 0, 0),
+    width: '100%',
+    padding: theme.spacing(0, 4),
+  },
+
+  loader: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: theme.spacing(16),
   },
 }));
 
@@ -17,14 +23,13 @@ function App() {
   const [selectedVideo, setSelectedVideo] = useState(null);
 
   const classes = useStyles();
-
   const handleSubmit = async (searchTerm) => {
     const {
       data: { items },
     } = await youtube.get('search', {
       params: {
         part: 'snippet',
-        maxResults: 5,
+        maxResults: 6,
         key: process.env.REACT_APP_API_KEY,
         q: searchTerm,
       },
@@ -37,26 +42,26 @@ function App() {
   useEffect(() => {
     handleSubmit('javascript');
   }, []);
-
+  console.log(videos);
   return (
-    <div className={classes.root}>
+    <>
       <Header onSubmit={handleSubmit} />
-      <Grid
-        container
-        spacing={3}
-        style={{
-          margin: 0,
-          width: '100%',
-        }}
-      >
-        <Grid item xs={8}>
-          <VideoDetail />
+
+      {!selectedVideo ? (
+        <div className={classes.loader}>
+          <CircularProgress color="secondary" size={50} />
+        </div>
+      ) : (
+        <Grid container spacing={4} className={classes.contentContainer}>
+          <Grid item xs={8}>
+            <VideoDetail video={selectedVideo} />
+          </Grid>
+          <Grid item xs={4}>
+            <VideoList />
+          </Grid>
         </Grid>
-        <Grid item xs={4}>
-          <VideoList />
-        </Grid>
-      </Grid>
-    </div>
+      )}
+    </>
   );
 }
 
