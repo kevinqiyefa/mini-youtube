@@ -1,65 +1,94 @@
-import React, { useState, useEffect } from 'react';
-import { Grid, CircularProgress } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Grid, CircularProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { VideoDetail, VideoList, Header } from './components';
 import youtube from './services/api/youtube';
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
-    margin: theme.spacing(4, 0, 0, 0),
+    margin: theme.spacing(4, 0),
     width: '100%',
     padding: theme.spacing(0, 4),
+    [theme.breakpoints.down('xs')]: {
+      padding: theme.spacing(0, 2),
+    },
+    boxSizing: 'border-box',
   },
 
-  loader: {
+  msg: {
     display: 'flex',
     justifyContent: 'center',
     marginTop: theme.spacing(16),
+    padding: theme.spacing(2),
   },
 }));
 
 function App() {
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const classes = useStyles();
-  const handleSubmit = async (searchTerm) => {
-    const {
-      data: { items },
-    } = await youtube.get('search', {
-      params: {
-        part: 'snippet',
-        maxResults: 6,
-        key: process.env.REACT_APP_API_KEY,
-        q: searchTerm,
-      },
-    });
 
-    setVideos(items);
-    setSelectedVideo(items[0]);
+  const handleSubmit = async (searchTerm) => {
+    setLoading(true);
+    try {
+      const {
+        data: { items },
+      } = await youtube.get('search', {
+        params: {
+          part: 'snippet',
+          maxResults: 6,
+          key: process.env.REACT_APP_API_KEY,
+          q: searchTerm,
+        },
+      });
+
+      setVideos(items);
+      setSelectedVideo(items[0]);
+    } catch (err) {
+      setError(
+        "Sorry, we've reached the free YouTube API daily limit :'(, please come back tomorrow"
+      );
+    }
+    setLoading(false);
   };
 
-  useEffect(() => {
-    handleSubmit('javascript');
-  }, []);
+  const videoContents = () => {
+    return !selectedVideo || loading ? (
+      <div className={classes.msg}>
+        {!selectedVideo && !loading ? (
+          <Typography variant="h5">
+            Please use the search bar to search...
+          </Typography>
+        ) : (
+          <CircularProgress color="secondary" size={50} />
+        )}
+      </div>
+    ) : (
+      <Grid container spacing={4} className={classes.contentContainer}>
+        <Grid item md={8} xs={12}>
+          <VideoDetail video={selectedVideo} />
+        </Grid>
+
+        <Grid item md={4} xs={12}>
+          <VideoList />
+        </Grid>
+      </Grid>
+    );
+  };
   console.log(videos);
   return (
     <>
       <Header onSubmit={handleSubmit} />
 
-      {!selectedVideo ? (
-        <div className={classes.loader}>
-          <CircularProgress color="secondary" size={50} />
-        </div>
+      {error ? (
+        <Typography variant="h6" color="secondary" className={classes.msg}>
+          {error}
+        </Typography>
       ) : (
-        <Grid container spacing={4} className={classes.contentContainer}>
-          <Grid item xs={8}>
-            <VideoDetail video={selectedVideo} />
-          </Grid>
-          <Grid item xs={4}>
-            <VideoList />
-          </Grid>
-        </Grid>
+        videoContents()
       )}
     </>
   );

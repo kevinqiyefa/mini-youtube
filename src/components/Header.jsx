@@ -18,6 +18,12 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+
+  mobileToolBar: {
+    [theme.breakpoints.down('xs')]: {
+      padding: 0,
+    },
+  },
 }));
 
 const Header = ({ onSubmit }) => {
@@ -25,7 +31,7 @@ const Header = ({ onSubmit }) => {
   return (
     <AppBar position="static" color="secondary">
       <Container maxWidth="xl">
-        <Toolbar>
+        <Toolbar className={classes.mobileToolBar}>
           <IconButton edge="start" color="inherit" aria-label="logo">
             <YouTubeIcon fontSize="large" />
           </IconButton>
