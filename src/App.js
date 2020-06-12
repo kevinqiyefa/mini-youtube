@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   CircularProgress,
@@ -27,6 +27,10 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
   },
 }));
+
+const scrollTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 
 function App() {
   const [videos, setVideos] = useState([]);
@@ -59,6 +63,13 @@ function App() {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (selectedVideo) {
+      console.log('innn');
+      scrollTop();
+    }
+  }, [selectedVideo]);
 
   const videoContents = () => {
     return !selectedVideo || loading ? (
