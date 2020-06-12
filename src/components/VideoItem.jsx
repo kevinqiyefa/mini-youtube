@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VideoItem = ({ video }) => {
+const VideoItem = ({ video, onVideoSelect }) => {
   const classes = useStyles();
 
   const truncateStr = (str) => {
@@ -42,7 +42,7 @@ const VideoItem = ({ video }) => {
       component={Paper}
       container
       className={classes.videoItemContainer}
-      onClick={() => {}}
+      onClick={() => onVideoSelect(video)}
     >
       <Grid item xs={7}>
         <img
@@ -63,6 +63,7 @@ const VideoItem = ({ video }) => {
 
 VideoItem.propTypes = {
   video: PropTypes.object.isRequired,
+  onVideoSelect: PropTypes.func.isRequired,
 };
 
 export default VideoItem;

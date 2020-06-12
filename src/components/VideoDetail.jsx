@@ -57,7 +57,7 @@ const VideoDetail = ({ video }) => {
           gutterBottom
           className={classes.detailsChannelHeader}
         >
-          -by {video.snippet.channelTitle}
+          - by {video.snippet.channelTitle}
         </Typography>
         <Typography variant="body2">{video.snippet.description}</Typography>
       </Paper>

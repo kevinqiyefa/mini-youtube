@@ -44,7 +44,7 @@ function App() {
       } = await youtube.get('search', {
         params: {
           part: 'snippet',
-          maxResults: 6,
+          maxResults: 40,
           key: process.env.REACT_APP_API_KEY,
           q: searchTerm,
         },
@@ -79,13 +79,16 @@ function App() {
           </Grid>
 
           <Grid item md={4} xs={12}>
-            <VideoList videos={videos} />
+            <VideoList
+              videos={videos.slice(1)}
+              onVideoSelect={setSelectedVideo}
+            />
           </Grid>
         </Grid>
       </Container>
     );
   };
-  console.log(videos);
+
   return (
     <>
       <Header onSubmit={handleSubmit} />
