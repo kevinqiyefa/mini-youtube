@@ -76,7 +76,7 @@ function App() {
       <div className={classes.msg}>
         {!selectedVideo && !loading ? (
           <Typography variant="h5">
-            No videos yet, please use the search bar to search...
+            No video yet, please use the search bar to search...
           </Typography>
         ) : (
           <CircularProgress color="secondary" size={50} />
